@@ -29,6 +29,13 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         authController.delegate = self
         authController.presentationContextProvider = self
         authController.performAutoFillAssistedRequests()
+        
+        didCompleteWithAuthorization = {authorization in
+            resolve(authorization);
+        }
+        didCompleteWithError = { error in
+            reject(String((error as NSError).code), String((error as NSError).localizedDescription), nil);
+        }
     }
     
     @objc
