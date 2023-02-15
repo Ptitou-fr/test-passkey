@@ -28,7 +28,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         let authController = ASAuthorizationController(authorizationRequests: [ assertionRequest ] )
         authController.delegate = self
         authController.presentationContextProvider = self
-        authController.performAutoFillAssistedRequests()
+        authController.performRequests()
         
         didCompleteWithAuthorization = {authorization in
             resolve(authorization);
