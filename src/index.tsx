@@ -38,31 +38,32 @@ interface PasskeyInterface {
 export default passkey as PasskeyInterface;
 
 export interface PasskeySignUpResponse {
-  credentialID: string,
-  attestation: string,
-  clientData: string,
+  credentialID: string;
+  attestation: string;
+  clientData: string;
 }
 
 export interface SignInWithPasskeyResponse {
-  signedInWith: SignInType.passkey,
-  credentialID: string,
-  authenticator: string,
-  clientData: string,
-  signature: string,
-  userId: string,
+  signedInWith: SignInType.withPasskey;
+  credentialID: string;
+  authenticator: string;
+  clientData: string;
+  signature: string;
+  userId: string;
 }
 
 export interface SignInWithPasswordResponse {
-  signedInWith: SignInType.password,
-  user: string,
-  password: string,
+  signedInWith: SignInType.withPassword;
+  user: string;
+  password: string;
 }
 
 export enum SignInType {
-  passkey = 'passkey',
-  password = 'password',
+  withPasskey = 'passkey',
+  withPassword = 'password',
 }
 
 // create an new interface PasskeySignInResponse that allow two type: SignInWithPasskeyResponse or SignInWithPasskeyResponse
-export type PasskeySignInResponse = SignInWithPasskeyResponse | SignInWithPasswordResponse;
-
+export type PasskeySignInResponse =
+  | SignInWithPasskeyResponse
+  | SignInWithPasswordResponse;
