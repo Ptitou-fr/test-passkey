@@ -6,7 +6,7 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-const Passkey = NativeModules.Passkey
+const passkey = NativeModules.Passkey
   ? NativeModules.Passkey
   : new Proxy(
       {},
@@ -17,59 +17,25 @@ const Passkey = NativeModules.Passkey
       }
     );
 
-export const signUp = (
-    {
-        domain,
-        displayName,
-        userId,
-        challenge,
-        securityKey = false,
-    }: PasskeySignUp
-): Promise<PasskeySignUpResponse > => {
-    return Passkey.signUpWith(
-        domain,
-        displayName,
-        userId,
-        challenge,
-        securityKey
-    );
+interface PasskeyInterface {
+  signUpWith(
+    domain: string,
+    displayName: string,
+    userId: string,
+    challenge: string,
+    securityKey?: boolean
+  ): Promise<PasskeySignUpResponse>;
+
+  signInWith(
+    domain: string,
+    challenge: string,
+    allowSavedPassword?: boolean,
+    preferLocallyAvailableCredentials?: boolean,
+    securityKey?: boolean
+  ): Promise<PasskeySignInResponse>;
 }
 
-export const signIn = (
-    {
-        domain,
-        challenge,
-        allowSavedPassword = false,
-        preferLocallyAvailableCredentials = true,
-        securityKey = false,
-    }: PasskeySignIn
-): Promise<PasskeySignInResponse> =>  {
-    return Passkey.signInWith(
-        domain,
-        challenge,
-        allowSavedPassword,
-        preferLocallyAvailableCredentials,
-        securityKey
-    );
-}
-
-export const logIn = signIn;
-
-
-export interface PasskeySignUp {
-  domain: string,
-  displayName: string,
-  userId: string,
-  challenge: string,
-  securityKey?: boolean,
-}
-export interface PasskeySignIn {
-  domain: string,
-  challenge: string,
-  allowSavedPassword?: boolean,
-  preferLocallyAvailableCredentials?: boolean,
-  securityKey?: boolean,
-}
+export default passkey as PasskeyInterface;
 
 export interface PasskeySignUpResponse {
   credentialID: string,
@@ -78,7 +44,7 @@ export interface PasskeySignUpResponse {
 }
 
 export interface SignInWithPasskeyResponse {
-  signedInWith: signInType.passkey,
+  signedInWith: SignInType.passkey,
   credentialID: string,
   authenticator: string,
   clientData: string,
@@ -87,12 +53,12 @@ export interface SignInWithPasskeyResponse {
 }
 
 export interface SignInWithPasswordResponse {
-  signedInWith: signInType.password,
+  signedInWith: SignInType.password,
   user: string,
   password: string,
 }
 
-export enum signInType {
+export enum SignInType {
   passkey = 'passkey',
   password = 'password',
 }
