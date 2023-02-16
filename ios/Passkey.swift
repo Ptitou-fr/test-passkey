@@ -12,7 +12,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
     func signUpWith(
         _ domain: String,
         withDisplayName displayName: String,
-        withUserId userId:String,
+        withUserId userId: String,
         withChallengeB64 challengeB64: String,
         withSecurityKey securityKey: Bool,
         withResolver resolve: @escaping RCTPromiseResolveBlock,
@@ -22,10 +22,12 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             reject("401", "Invalid challenge", nil);
             return;
         }
+        let userIdData: Data = RCTConvert.nsData(userId);
         
         let publicKeyCredentialProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: domain)
-        let assertionRequest = publicKeyCredentialProvider.createCredentialAssertionRequest(challenge: challengeData)
-        let authController = ASAuthorizationController(authorizationRequests: [ assertionRequest ] )
+        let registrationRequest = publicKeyCredentialProvider.createCredentialRegistrationRequest(challenge: challengeData,
+                                                                                                  name: displayName, userID: userIdData)
+        let authController = ASAuthorizationController(authorizationRequests: [ registrationRequest ] )
         authController.delegate = self
         authController.presentationContextProvider = self
         authController.performRequests()
