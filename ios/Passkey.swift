@@ -22,7 +22,10 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             reject("401", "Invalid challenge", nil);
             return;
         }
-        let userIdData: Data = RCTConvert.nsData(userId);
+        guard let userIdData: Data = userId.data(using: .utf8) else {
+            reject("401", "Invalid userId", nil);
+            return;
+        }
         
         let publicKeyCredentialProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: domain)
         let registrationRequest = publicKeyCredentialProvider.createCredentialRegistrationRequest(challenge: challengeData,
