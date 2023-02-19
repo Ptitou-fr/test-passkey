@@ -3,7 +3,7 @@
 Passkeys allow users to sign in to your app without typing a password.<br>
 It's an alternative method of user authentication that eliminates the need for a password while being easier to use and far more secure.<br>
 <br>
-rn-passkey helps improving the user experience.
+It helps improving the user experience.
 
 ## Installation
 ###### Install the library using either npm:
@@ -24,7 +24,7 @@ cd ios && pod install
 To use passkeys on iOS the system should be able to verify the domain associated with your app.<br>
 To do this, you need to:
 #### 1) Add an associated domains file to your website ([apple doc](https://developer.apple.com/documentation/xcode/supporting-associated-domains)):
-Construct a JSON file named apple-app-site-association (without an extension) and place it in your site's .well-known directory at the root of your domain.
+Construct a JSON file named apple-app-site-association (without an extension) and place it in your site's '.well-known directory' at the root of your domain.
 For example, if your domain is 'example.com:<br>
 the file should be located at https://example.com/.well-known/apple-app-site-association. <br>
 and it should contain a JSON object with the following structure:<br>
@@ -45,14 +45,14 @@ To add your domain to the entitlement, you need to
 - open your app with Xcode,<br>
 - select your app target (_step 1, 2 , and 3 on the screenshot below_),<br>
 - go to the Signing & Capabilities tab (_step 4_),<br>
-- click (+ Capability) to add the 'Associated Domains' capability (_step 5_),<br>
+- click '+ Capability' (_step 5_), then add the 'Associated Domains' capability,<br>
 ![Signing Capability Screenshot](gitAssets/screenshotSigningCapability.png)<br>
-- click the (+) button to add a placeholder domain.<br>
+- Inside 'Associated Domains' capability box, click the (+) button to add a placeholder domain.<br>
 Replace it with webcredentials:<yourdomain.com>,<br>
 It should look like this:<br>
 ![Associated Domains Screenshot](gitAssets/screenshotAssociatedDomains.png)<br>
 While you're developing your app, for debugging purposes or if your server is unreachable from the public internet, you can use the alternate mode feature ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)).<br>
-For example like this: webcredentials:example.com?mode=developer,<br>
+For example like: webcredentials:example.com?mode=developer,<br>
 
 ## Usage
 
@@ -68,8 +68,9 @@ rn-passkey exposes the following methods:
   - `domain`: string<br>
 Your domain (the one associate with your app).
   - `challenge`: string<br>
-A challenge fetched from your server.<br>
-The challenge needs to be unique for each request.
+Obtain a challenge from your server.<br>
+Important: The challenge needs to be unique for each request.
+The challenge need to be a Base64 string.
   - `options?`: Object<br>
 Options is an optional object with the following properties:<br>
     - `allowSavedPassword?`: boolean (default value: False)<br>
@@ -87,15 +88,15 @@ Options is an optional object with the following properties:<br>
         ( if no credentials are available locally, the user can signIn with a passkey from a nearby device or cancels the request ).
     - `securityKey?`: boolean (default value: False)<br>
       - if True:<br>
-      the system signIn UI modal shows an option to use of an external passkey saved in a securityKey.
+      the system signIn UI modal shows an option to use of a passkey saved in an external securityKey.
       - if False:<br>
-      the system signIn UI modal doesn't show an option to use of an external passkey saved in a securityKey.
+      the system signIn UI modal doesn't show an option to use of a passkey saved in an external securityKey.
 
 ### signIn return value
 The signIn returns a Promise that resolves to an object with the following properties:<br>
 - If a passkey was used to signIn:<br>
   - `assertion`: string<br>
-    assertion = 'passkey'.
+    In this case, assertion = 'passkey'.
   - `userId`: string<br>
     The user identifier for this assertion.
   - `signature`: string<br>
@@ -106,7 +107,7 @@ The signIn returns a Promise that resolves to an object with the following prope
 
 - If a saved password was used to signIn:<br>
   - `assertion`: string<br>
-    assertion = 'password'.
+    In this case, assertion = 'password'.
   - `user`: string<br>
     The user identifier for this assertion.
   - `password`: string<br>
@@ -114,56 +115,88 @@ The signIn returns a Promise that resolves to an object with the following prope
 
 - If the request was canceled:<br>
   - `assertion`: string<br>
-    assertion = 'canceled'.
+    In this case, assertion = 'canceled'.
 
-### example of signIn
+### examples:
+#### Signing in with a passkey or saved password on app launch
+We recommend to use this 'silent' signIn option on your app launch if the user is not already logged in.<br>
+- If there is a passkey in the device, the system shows a signIn UI modal.<br>
+=> The user can log in safely with only one click.<br>
+- If there is no passkey in the device, the request ends silently.<br>
+=> Time to show a login or signUp screen to the user.<br>
 ```ts
+import { signIn, AssertionType } from 'rn-passkey';
+
 const domain = 'exemple.com';
-// The challenge needs to be unique for each request!
-// Fetch the challenge from your server!
+// Obtain a challenge from your server.<br>
+// Important: The challenge needs to be unique for each request.
+// The challenge need to be a Base64 string.
 const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
-const allowSavedPassword = True;
-const preferLocallyAvailableCredentials = True;
-const securityKey = False;
+const options = {
+  preferLocallyAvailableCredentials: true,
+  allowSavedPassword: true,
+};
 
 try {
-    const assertion = await signIn(
-      domain,
-      chalenge,
-      allowSavedPassword,
-      preferLocallyAvailableCredentials,
-      securityKey
-    );
-    if (assertion.signedInWith === SignInType.PASSKEY) {
-        const { userId, signature, authenticator } = assertion;
-        // Verify the signature and clientDataJson with your server forthe given userId.
-        ...
-        // then, if the signature is valid, you can sign the user in your app.
-    } else if (assertion.signedInWith === SignInType.PASSWORD) {
-        const { user, password } = assertion;
-        // Verify the userName and password with your server.
-        ...
-        // then, if the credentials are valid, you can sign the user in your app.
-    } else {
-      // assertion.signedInWith === SignInType.CANCELLED
-      if (preferLocallyAvailableCredentials) {
-          // either no credentials are available locally and the request abords silently,
-          // or the user cancelled the request.
+  const crential = await signIn(
+    domain,
+    chalenge,
+    options
+  );
+  if ( crential.assertion === AssertionType.PASSKEY ) {
+    const { userId, signature, authenticator } = assertion;
+    // Verify the signature and clientDataJson with your server forthe given userId.
+    // ...
+    // then, if the signature is valid, you can sign in the user.
+  } else if ( crential.assertion === AssertionType.PASSWORD ) {
+    // verify the credeintials (userName and password) with your server.
+    // ...
+    // then, if the credentials are valid, you can sign in the user.
+    // This is a good time to offer the user to create a passkey.
+  } else {
+    // assertion.signedInWith === SignInType.CANCELLED
+    // either no credentials are available locally and the request abords silently,
+    // or the user cancelled the request.
 
-          // you can process to your classic login / signUp flow.
-      } else {
-          // the user cancelled the request.
-      }
-    }
+    // => you probably now want to show a login or signUp screen to the user.
+  }
+} catch (error) {
+  // Handle error
+  // Note: the error.message cointains useful information about the error.
 }
 ```
+#### Signing in with a passkey in response to a user's action
+As this signIn is not silent (an UI modal is always shown to the user),<br>
+For user experience reasons, we recommend using it in response to a user's action, like a 'Login with a passkey' button press.<br>
+```ts
+import { signIn, AssertionType } from 'rn-passkey';
 
+const domain = 'exemple.com';
+// Obtain a challenge from your server.<br>
+// Important: The challenge needs to be unique for each request.
+// The challenge need to be a Base64 string.
+const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
 
-import { signIn } from 'rn-passkey';
+try {
+  const crential = await signIn(
+    domain,
+    chalenge
+  );
+  if ( crential.assertion === AssertionType.PASSKEY ) {
+    const { userId, signature, authenticator } = assertion;
+    // Verify the signature and clientDataJson with your server forthe given userId.
+    // ...
+    // then, if the signature is valid, you can sign in the user.
+  } else {
+    // assertion.signedInWith === SignInType.CANCELLED
+    // => the user cancelled the request.
 
-// ...
-
-const result = await multiply(3, 7);
+    // => you probably want go back to tour login screen.
+  }
+} catch (error) {
+  // Handle error
+  // Note: the error.message cointains useful information about the error.
+}
 ```
 
 ## Contributing

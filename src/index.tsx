@@ -58,14 +58,14 @@ export interface SignInWithPasswordResponse {
   password: string;
 }
 
-export interface SignInCancelledResponse { 
-  assertion: AssertionType.CANCELLED;
+export interface SignInCancelledResponse {
+  assertion: AssertionType.CANCELED;
 }
 
 export enum AssertionType {
   PASSKEY = 'passkey',
   PASSWORD = 'password',
-  CANCELLED = 'cancelled',
+  CANCELED = 'canceled',
 }
 
 // create a new interface PasskeySignInResponse that allow two type: SignInWithPasskeyResponse or SignInWithPasskeyResponse
