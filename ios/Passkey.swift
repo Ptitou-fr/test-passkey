@@ -9,7 +9,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
     var didCompleteWithError: (Error) -> Void = { error in }
     
     @objc
-    func signUpWith(
+    func signUp(
         _ domain: String,
         withDisplayName displayName: String,
         withUserId userId: String,
@@ -44,7 +44,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
     }
     
     @objc
-    func signInWith(
+    func signIn(
         _ domain: String,
         withChallengeB64 challengeB64: String,
         withAllowSavedPassword allowSavedPassword: Bool,

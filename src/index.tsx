@@ -18,7 +18,7 @@ const passkey = NativeModules.Passkey
     );
 
 interface PasskeyInterface {
-  signUpWith(
+  signUp(
     domain: string,
     displayName: string,
     userId: string,
@@ -26,7 +26,7 @@ interface PasskeyInterface {
     securityKey?: boolean
   ): Promise<PasskeySignUpResponse>;
 
-  signInWith(
+  signIn(
     domain: string,
     challenge: string,
     allowSavedPassword?: boolean,
@@ -44,7 +44,7 @@ export interface PasskeySignUpResponse {
 }
 
 export interface SignInWithPasskeyResponse {
-  signedInWith: SignInType.withPasskey;
+  signedInWith: SignInType.PASSKEY;
   credentialID: string;
   authenticator: string;
   clientData: string;
@@ -53,17 +53,17 @@ export interface SignInWithPasskeyResponse {
 }
 
 export interface SignInWithPasswordResponse {
-  signedInWith: SignInType.withPassword;
+  signedInWith: SignInType.PASSWORD;
   user: string;
   password: string;
 }
 
 export enum SignInType {
-  withPasskey = 'passkey',
-  withPassword = 'password',
+  PASSKEY = 'passkey',
+  PASSWORD = 'password',
 }
 
-// create an new interface PasskeySignInResponse that allow two type: SignInWithPasskeyResponse or SignInWithPasskeyResponse
+// create a new interface PasskeySignInResponse that allow two type: SignInWithPasskeyResponse or SignInWithPasskeyResponse
 export type PasskeySignInResponse =
   | SignInWithPasskeyResponse
   | SignInWithPasswordResponse;
