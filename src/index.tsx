@@ -44,7 +44,7 @@ export interface PasskeySignUpResponse {
 }
 
 export interface SignInWithPasskeyResponse {
-  signedInWith: SignInType.PASSKEY;
+  assertion: AssertionType.PASSKEY;
   credentialID: string;
   authenticator: string;
   clientData: string;
@@ -53,17 +53,23 @@ export interface SignInWithPasskeyResponse {
 }
 
 export interface SignInWithPasswordResponse {
-  signedInWith: SignInType.PASSWORD;
+  assertion: AssertionType.PASSWORD;
   user: string;
   password: string;
 }
 
-export enum SignInType {
+export interface SignInCancelledResponse { 
+  assertion: AssertionType.CANCELLED;
+}
+
+export enum AssertionType {
   PASSKEY = 'passkey',
   PASSWORD = 'password',
+  CANCELLED = 'cancelled',
 }
 
 // create a new interface PasskeySignInResponse that allow two type: SignInWithPasskeyResponse or SignInWithPasskeyResponse
 export type PasskeySignInResponse =
   | SignInWithPasskeyResponse
-  | SignInWithPasswordResponse;
+  | SignInWithPasswordResponse
+  | SignInCancelledResponse;
