@@ -1,7 +1,7 @@
 # rn-passkey
 
 Passkeys allow users to sign in to your app without typing a password.<br>
-It's an alternative method of user authentication that eliminates the need for a password while being easier to use and far more secure [more about passkey](https://developer.apple.com/passkeys/).<br>
+It's an alternative method of user authentication that eliminates the need for a password while being easier to use and far more secure. Learn more about passkey: [Google](https://youtu.be/xghjqgj4peA?t=540), [Apple](https://developer.apple.com/passkeys/).<br>
 <br>
 It helps improving the user experience.
 
