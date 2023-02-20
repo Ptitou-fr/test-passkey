@@ -23,7 +23,7 @@ interface PasskeyInterface {
     challenge: string,
     displayName: string,
     userId: string,
-    options?: signUpOptions,
+    options?: signUpOptions
   ): Promise<PasskeySignUpResponse>;
 
   signIn(

@@ -14,7 +14,6 @@ RCT_EXTERN_METHOD( signUp: (NSString)domain
 
 RCT_EXTERN_METHOD( signIn: (NSString)domain
                    withChallengeB64: (NSString)challengeB64
-                   withAllowSavedPassword: (BOOL)allowSavedPassword
                    withOptions: (NSDictionary _Nullable)options
                    withResolver: (RCTPromiseResolveBlock)resolve
                    withRejecter: (RCTPromiseRejectBlock)reject

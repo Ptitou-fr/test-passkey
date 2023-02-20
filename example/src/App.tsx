@@ -13,7 +13,9 @@ export default function App() {
     // The challenge have to be a base64 encoded string.
     const challenge =
       'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
-    signIn('example.com', challenge, {preferLocallyAvailableCredentials: true})
+    signIn('example.com', challenge, {
+      preferLocallyAvailableCredentials: false,
+    })
       .then((auth) => {
         if (auth.assertionType === AssertionType.PASSKEY) {
           // passkey used to signIn
