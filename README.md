@@ -171,18 +171,18 @@ try {
     chalenge,
     options
   );
-  if ( crential.assertion === AssertionType.PASSKEY ) {
+  if ( crential.assertionType === AssertionType.PASSKEY ) {
     const { userId, signature, authenticator } = assertion;
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
-  } else if ( crential.assertion === AssertionType.PASSWORD ) {
+  } else if ( crential.assertionType === AssertionType.PASSWORD ) {
     // verify the credeintials (userName and password) with your server.
     // ...
     // then, if the credentials are valid, you can sign in the user.
     // This is a good time to offer the user to create a passkey.
   } else {
-    // assertion.signedInWith === SignInType.CANCELLED
+    // crential.assertionType === AssertionType.CANCELLED
     // either no credentials are available locally and the request abords silently,
     // or the user cancelled the request.
 
@@ -210,13 +210,13 @@ try {
     domain,
     chalenge
   );
-  if ( crential.assertion === AssertionType.PASSKEY ) {
+  if ( crential.assertionType === AssertionType.PASSKEY ) {
     const { userId, signature, authenticator } = assertion;
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
   } else {
-    // assertion.signedInWith === SignInType.CANCELLED
+    // crential.assertionType === AssertionType.CANCELLED
     // => the user cancelled the request.
 
     // => you probably want go back to tour login screen.

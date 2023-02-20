@@ -14,7 +14,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         withDisplayName displayName: String,
         withUserId userId: String,
         withChallengeB64 challengeB64: String,
-        withSecurityKey securityKey: Bool,
+        withOptions options: NSDictionary?,
         withResolver resolve: @escaping RCTPromiseResolveBlock,
         withRejecter reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
@@ -26,6 +26,8 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             reject("401", "Invalid userId", nil);
             return;
         }
+        let options = options ?? [:] // default value
+        let securityKey = options["securityKey"] as? Bool ?? false // default value
         
         let publicKeyCredentialProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: domain)
         let registrationRequest = publicKeyCredentialProvider.createCredentialRegistrationRequest(challenge: challengeData,
@@ -47,9 +49,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
     func signIn(
         _ domain: String,
         withChallengeB64 challengeB64: String,
-        withAllowSavedPassword allowSavedPassword: Bool,
-        withPreferLocallyAvailableCredentials preferLocallyAvailableCredentials: Bool,
-        withSecurityKey securityKey: Bool,
+        withOptions options: NSDictionary?,
         withResolver resolve: @escaping RCTPromiseResolveBlock,
         withRejecter reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
@@ -61,6 +61,12 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         }
         //         let bytes = [UInt32](repeating: 0, count: 32).map { _ in arc4random() }
         //         let challengeData = Data(bytes: bytes, count: 32)
+        
+        let options = options ?? [:] // default value
+        let allowSavedPassword = options["allowSavedPassword"] as? Bool ?? false // default value
+        let preferLocallyAvailableCredentials = options["preferLocallyAvailableCredentials"] as? Bool ?? false // default value
+        let securityKey = options["securityKey"] as? Bool ?? false // default value
+
         
         let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: domain)
         

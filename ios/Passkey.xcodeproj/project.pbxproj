@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CD5CF02B299AEC4300C647CC /* Passkey.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* Passkey.swift */; };
-		CD5CF038299AF95200C647CC /* Passkey.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* Passkey.m */; };
+		CDC6A0F729A33A3D00CB04F5 /* Passkey.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* Passkey.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -116,7 +116,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD5CF038299AF95200C647CC /* Passkey.m in Sources */,
+				CDC6A0F729A33A3D00CB04F5 /* Passkey.m in Sources */,
 				CD5CF02B299AEC4300C647CC /* Passkey.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

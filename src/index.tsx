@@ -23,18 +23,25 @@ interface PasskeyInterface {
     challenge: string,
     displayName: string,
     userId: string,
-    securityKey?: boolean
+    options?: signUpOptions,
   ): Promise<PasskeySignUpResponse>;
 
   signIn(
     domain: string,
     challenge: string,
-    allowSavedPassword?: boolean,
-    preferLocallyAvailableCredentials?: boolean,
-    securityKey?: boolean
+    options?: signInOptions
   ): Promise<PasskeySignInResponse>;
 }
 
+interface signInOptions {
+  allowSavedPassword?: boolean;
+  preferLocallyAvailableCredentials?: boolean;
+  securityKey?: boolean;
+}
+
+interface signUpOptions {
+  securityKey?: boolean;
+}
 export default passkey as PasskeyInterface;
 
 export interface PasskeySignUpResponse {
@@ -44,7 +51,7 @@ export interface PasskeySignUpResponse {
 }
 
 export interface SignInWithPasskeyResponse {
-  assertion: AssertionType.PASSKEY;
+  assertionType: AssertionType.PASSKEY;
   credentialID: string;
   authenticator: string;
   clientData: string;
@@ -53,13 +60,13 @@ export interface SignInWithPasskeyResponse {
 }
 
 export interface SignInWithPasswordResponse {
-  assertion: AssertionType.PASSWORD;
+  assertionType: AssertionType.PASSWORD;
   user: string;
   password: string;
 }
 
 export interface SignInCancelledResponse {
-  assertion: AssertionType.CANCELED;
+  assertionType: AssertionType.CANCELED;
 }
 
 export enum AssertionType {
