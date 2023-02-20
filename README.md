@@ -1,7 +1,7 @@
 # rn-passkey
 
 Passkeys allow users to sign in to your app without typing a password.<br>
-It's an alternative method of user authentication that eliminates the need for a password while being easier to use and far more secure. Learn more about passkey: [Google](https://youtu.be/xghjqgj4peA?t=540), [Apple](https://developer.apple.com/passkeys/).<br>
+It's an alternative method of user authentication that eliminates the need for a password while being easier to use and far more secure. Learn more about passkeys: [Google](https://developers.google.com/identity/passkeys), [Apple](https://developer.apple.com/passkeys/).<br>
 <br>
 It helps improving the user experience.
 
@@ -70,7 +70,7 @@ Your domain (the one associate with your app).
   - `challenge`: string<br>
 Obtain a challenge from your server.<br>
 Important: The challenge needs to be unique for each request.
-The challenge need to be a Base64 string.
+The challenge has to be a Base64 string.
   - `options?`: Object<br>
 Options is an optional object with the following properties:<br>
     - `allowSavedPassword?`: boolean (default value: False)<br>
@@ -117,7 +117,33 @@ The signIn returns a Promise that resolves to an object with the following prope
   - `assertion`: string<br>
     In this case, assertion = 'canceled'.
 
-### examples:
+### signUp parameters
+- `domain`: string<br>
+  Your domain (the one associate with your app).
+- `challenge`: string<br>
+  Obtain a challenge from your server.<br>
+  Important: The challenge needs to be unique for each request.
+  The challenge has to be a Base64 string.
+- `userName`: string<br>
+  The user-visible name that identifies a passkey.
+- `userID`: string<br>
+  The identifier that your server associates with the user.
+- `options?`: Object<br>
+  Options is an object with the following properties:<br>
+  - `securityKey?`: boolean (default value: False)<br>
+    If true, the new passkey will be stored in an external securityKey device.<br>
+
+### signUp return value
+The signUp returns a Promise that resolves to an object with the following properties:<br>
+- `attestation`: string<br>
+  The attestation contains the user's public key that you have to store on your server.
+  You will need it to verify the signature of the assertions.
+- `userName`: string<br>
+  The user-visible name to identifies a passkey.
+- `userID`: string<br>
+  The identifier that your server associates with the user.
+
+## examples:
 #### Signing in with a passkey or saved password on app launch
 We recommend to use this 'silent' signIn option on your app launch if the user is not already logged in.<br>
 - If there is a passkey in the device, the system shows a signIn UI modal.<br>
@@ -128,7 +154,7 @@ We recommend to use this 'silent' signIn option on your app launch if the user i
 import { signIn, AssertionType } from 'rn-passkey';
 
 const domain = 'exemple.com';
-// Obtain a challenge from your server.<br>
+// Obtain a challenge from your server.
 // Important: The challenge needs to be unique for each request.
 // The challenge need to be a Base64 string.
 const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
@@ -172,9 +198,9 @@ For user experience reasons, we recommend using it in response to a user's actio
 import { signIn, AssertionType } from 'rn-passkey';
 
 const domain = 'exemple.com';
-// Obtain a challenge from your server.<br>
+// Obtain a challenge from your server.
 // Important: The challenge needs to be unique for each request.
-// The challenge need to be a Base64 string.
+// The challenge has to be a Base64 string.
 const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
 
 try {
@@ -193,6 +219,41 @@ try {
 
     // => you probably want go back to tour login screen.
   }
+} catch (error) {
+  // Handle error
+  // Note: the error.message cointains useful information about the error.
+}
+```
+
+#### SignUp - Create a new passkey
+```ts
+import { signUp } from 'rn-passkey';
+
+const domain = 'exemple.com';
+// Obtain a challenge from your server.
+// Important: The challenge needs to be unique for each request.
+// The challenge has to be a Base64 string.
+const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
+// The user-visible name to identifies a passkey.
+// the only data you have to ask the user for.
+const userName = 'John Doe';
+// An identifier from your server that you want to associate with the user.
+const userID = '123456789';
+
+try {
+  const crential = await signUp(
+    domain,
+    chalenge,
+    userName,
+    userID
+  );
+  const { attestation, userName, userID } = crential;
+  // Attestation containts the user's public key that you have to store on your server.
+  // You will need it to verify the signature of the assertions.
+  // userName and userID are the same as the ones you passed to the signUp function.
+
+  // after your server has verified the attestation, it can create a new user account.
+  // then you can sign in the user.
 } catch (error) {
   // Handle error
   // Note: the error.message cointains useful information about the error.

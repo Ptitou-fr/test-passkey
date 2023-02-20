@@ -20,9 +20,9 @@ const passkey = NativeModules.Passkey
 interface PasskeyInterface {
   signUp(
     domain: string,
+    challenge: string,
     displayName: string,
     userId: string,
-    challenge: string,
     securityKey?: boolean
   ): Promise<PasskeySignUpResponse>;
 
