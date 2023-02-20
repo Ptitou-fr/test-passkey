@@ -64,8 +64,8 @@ rn-passkey exposes the following methods:
   import { signIn, signUp } from 'rn-passkey';
 ```
 
-### signIn
-#### signIn parameters
+### signIn:
+#### signIn parameters:
   - `domain`: string<br>
 Your domain (the one associate with your app).
   - `challenge`: string<br>
@@ -93,7 +93,7 @@ Options is an optional object with the following properties:<br>
       - if False:<br>
       the system signIn UI modal doesn't show an option to use of a passkey saved in an external securityKey.
 
-#### signIn return value
+#### signIn return value:
 The signIn returns a Promise that resolves to an object with the following properties:<br>
 - If a passkey was used to signIn:<br>
   - `assertion`: string<br>
@@ -118,8 +118,8 @@ The signIn returns a Promise that resolves to an object with the following prope
   - `assertion`: string<br>
     In this case, assertion = 'canceled'.
 
-### signUp
-#### signUp parameters
+### signUp:
+#### signUp parameters:
 - `domain`: string<br>
   Your domain (the one associate with your app).
 - `challenge`: string<br>
@@ -135,7 +135,7 @@ The signIn returns a Promise that resolves to an object with the following prope
   - `securityKey?`: boolean (default value: False)<br>
     If true, the new passkey will be stored in an external securityKey device.<br>
 
-#### signUp return value
+#### signUp return value:
 The signUp returns a Promise that resolves to an object with the following properties:<br>
 - `attestation`: string<br>
   The attestation contains the user's public key that you have to store on your server.
