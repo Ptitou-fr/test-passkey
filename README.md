@@ -42,10 +42,10 @@ To do so:
     }
     ```
     in which you replace:<br>
-    `'ABCDE12345'` with your teamID ([locate your Team ID](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id))<br>
+    `'ABCDE12345'` with your own teamID ([locate your Team ID](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id))<br>
     and<br>
-    `'com.example.app'` with your app's bundle identifier.
-  - Place this JSON file in your site's '.well-known' directory at the root of your domain. So it's serve at
+    `'com.example.app'` with your own app's bundle identifier.
+  - Place this JSON file in your site's '.well-known' directory at the root of your domain. So it's served at
     ```
      GET https://example.com/.well-known/apple-app-site-association
     ```
@@ -53,17 +53,14 @@ To do so:
     `'example.com'` with your own domain ([apple doc](https://developer.apple.com/documentation/xcode/supporting-associated-domains)).
 
 - In your app, add the `Associated Domains` capability ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)):
-  - open your app with Xcode,<br>
-  - select your app target (_step 1, 2 , and 3 on the screenshot below_),<br>
-  - go to the Signing & Capabilities tab (_step 4_),<br>
-  - click '+ Capability' (_step 5_), then add the 'Associated Domains' capability,<br>
-  ![Signing Capability Screenshot](gitAssets/screenshotSigningCapability.png)<br>
+  - Open your app with Xcode,<br>
+  - Select your app target ([steps 1, 2 , and 3](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)),<br>
+  - Go to the Signing & Capabilities tab ([step 4](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)),<br>
+  - Click '+ Capability' ([step 5](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)), then add the 'Associated Domains' capability,<br>
   - Inside 'Associated Domains' capability box, click the (+) button to add a placeholder domain.<br>
-  Replace it with webcredentials:<yourdomain.com>,<br>
-  It should look like this:<br>
-  ![Associated Domains Screenshot](gitAssets/screenshotAssociatedDomains.png)<br>
+  Replace it with webcredentials:<yourdomain.com> ([see our example](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotAssociatedDomains.png))<br>
     > While you're developing your app, for debugging purposes or if your server is unreachable from the public internet, you can use the alternate mode feature ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)).<br>
-    > For example like: webcredentials:example.com?mode=developer,<br>
+    > For example: webcredentials:example.com?mode=developer,<br>
 
 ## Usage
 
