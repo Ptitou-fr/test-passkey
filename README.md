@@ -1,9 +1,16 @@
 # rn-passkey
 
-Passkeys allow users to sign in to your app without typing a password.<br>
-It's an alternative method of user authentication that eliminates the need for a password while being easier to use and far more secure. Learn more about passkeys: [Google](https://developers.google.com/identity/passkeys), [Apple](https://developer.apple.com/passkeys/).<br>
-<br>
+Passkeys allow users to sign in to your app without typing a password.
+
+It's an alternative method of user authentication that eliminates the need for a password while being easier to use and far more secure. Learn more about passkeys: [Google](https://developers.google.com/identity/passkeys), [Apple](https://developer.apple.com/passkeys/).
+
 It helps improving the user experience.
+
+> Passkeys are available on devices running:
+> - iOS 16 and above.
+> - Android API level 34 and above.
+>
+>This library provides a fail-over for older versions of android and iOS.
 
 ## Installation
 ###### Install the library using either npm:
@@ -21,44 +28,48 @@ cd ios && pod install
 ### Android
 
 ### iOS
-To use passkeys on iOS the system should be able to verify the domain associated with your app.<br>
-To do this, you need to:
-#### 1) Add an associated domains file to your website ([apple doc](https://developer.apple.com/documentation/xcode/supporting-associated-domains)):
-Construct a JSON file named apple-app-site-association (without an extension) and place it in your site's '.well-known directory' at the root of your domain.
-For example, if your domain is 'example.com:<br>
-the file should be located at https://example.com/.well-known/apple-app-site-association. <br>
-and it should contain a JSON object with the following structure:<br>
-```json
-{
-  "webcredentials": {
-    "apps": [ "ABCDE12345.com.example.app" ]
-  }
-}
-```
-in which:<br>
-`'ABCDE12345'` is your Team ID ([locate your Team ID](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id))<br>
-and<br>
-`'com.example.app'` is your app's bundle identifier.
+To use passkeys on iOS you have to associate a domain with your app.<br>
+To do so:
 
-#### 2) Add the domain to the `Associated Domains` capability in your app's entitlements file ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)):
-To add your domain to the entitlement, you need to
-- open your app with Xcode,<br>
-- select your app target (_step 1, 2 , and 3 on the screenshot below_),<br>
-- go to the Signing & Capabilities tab (_step 4_),<br>
-- click '+ Capability' (_step 5_), then add the 'Associated Domains' capability,<br>
-![Signing Capability Screenshot](gitAssets/screenshotSigningCapability.png)<br>
-- Inside 'Associated Domains' capability box, click the (+) button to add a placeholder domain.<br>
-Replace it with webcredentials:<yourdomain.com>,<br>
-It should look like this:<br>
-![Associated Domains Screenshot](gitAssets/screenshotAssociatedDomains.png)<br>
-While you're developing your app, for debugging purposes or if your server is unreachable from the public internet, you can use the alternate mode feature ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)).<br>
-For example like: webcredentials:example.com?mode=developer,<br>
+- On your domain website server ([apple doc](https://developer.apple.com/documentation/xcode/supporting-associated-domains)):
+
+  - Construct a JSON file named apple-app-site-association (without an extension) with the following structure:
+    ```json
+    {
+      "webcredentials": {
+        "apps": [ "ABCDE12345.com.example.app" ]
+      }
+    }
+    ```
+    in which you replace:<br>
+    `'ABCDE12345'` with your teamID ([locate your Team ID](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id))<br>
+    and<br>
+    `'com.example.app'` with your app's bundle identifier.
+  - Place this JSON file in your site's '.well-known' directory at the root of your domain. So it's serve at
+    ```
+     GET https://example.com/.well-known/apple-app-site-association
+    ```
+    in which you replace:<br>
+    `'example.com'` with your own domain ([apple doc](https://developer.apple.com/documentation/xcode/supporting-associated-domains)).
+
+- In your app, add the `Associated Domains` capability ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)):
+  - open your app with Xcode,<br>
+  - select your app target (_step 1, 2 , and 3 on the screenshot below_),<br>
+  - go to the Signing & Capabilities tab (_step 4_),<br>
+  - click '+ Capability' (_step 5_), then add the 'Associated Domains' capability,<br>
+  ![Signing Capability Screenshot](gitAssets/screenshotSigningCapability.png)<br>
+  - Inside 'Associated Domains' capability box, click the (+) button to add a placeholder domain.<br>
+  Replace it with webcredentials:<yourdomain.com>,<br>
+  It should look like this:<br>
+  ![Associated Domains Screenshot](gitAssets/screenshotAssociatedDomains.png)<br>
+    > While you're developing your app, for debugging purposes or if your server is unreachable from the public internet, you can use the alternate mode feature ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)).<br>
+    > For example like: webcredentials:example.com?mode=developer,<br>
 
 ## Usage
 
 rn-passkey exposes the following methods:
-- `signIn`: - Use an exiting passkey or a saved password to authenticate an user.
-- `signUp`: - Create a passkey to register a new user.
+- `signIn`: Authenticate an user with an exiting passkey or a saved password.
+- `signUp`: Create a passkey to register a new user.
 
 ```ts
   import { signIn, signUp } from 'rn-passkey';
