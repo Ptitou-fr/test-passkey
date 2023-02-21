@@ -7,7 +7,7 @@ It's an alternative method of user authentication that eliminates the need for a
 It helps improving the user experience.
 
 > Passkeys are available on devices running:
-> - iOS 16 and above.
+> - iOS 15 and above.
 > - Android API level 34 and above.
 >
 >This library provides a fail-over for older versions of android and iOS.
@@ -70,6 +70,10 @@ rn-passkey exposes the following methods:
 - `signUp`: Create a passkey to register a new user.
 
 ```ts
+  import passkey from 'rn-passkey';
+  // then use passkey.signIn() or passkey.signUp()
+
+  // or ES6+ destructuring syntax
   import { signIn, signUp } from 'rn-passkey';
 ```
 

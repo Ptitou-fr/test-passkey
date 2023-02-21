@@ -42,15 +42,13 @@ interface signInOptions {
 interface signUpOptions {
   securityKey?: boolean;
 }
-export default passkey as PasskeyInterface;
-
-export interface PasskeySignUpResponse {
+interface PasskeySignUpResponse {
   credentialID: string;
   attestation: string;
   clientData: string;
 }
 
-export interface SignInWithPasskeyResponse {
+interface SignInWithPasskeyResponse {
   assertionType: AssertionType.PASSKEY;
   credentialID: string;
   authenticator: string;
@@ -59,24 +57,45 @@ export interface SignInWithPasskeyResponse {
   userId: string;
 }
 
-export interface SignInWithPasswordResponse {
+interface SignInWithPasswordResponse {
   assertionType: AssertionType.PASSWORD;
   user: string;
   password: string;
 }
 
-export interface SignInCancelledResponse {
+interface SignInCancelledResponse {
   assertionType: AssertionType.CANCELED;
 }
 
-export enum AssertionType {
+enum AssertionType {
   PASSKEY = 'passkey',
   PASSWORD = 'password',
   CANCELED = 'canceled',
 }
 
-// create a new interface PasskeySignInResponse that allow two type: SignInWithPasskeyResponse or SignInWithPasskeyResponse
-export type PasskeySignInResponse =
+type PasskeySignInResponse =
   | SignInWithPasskeyResponse
   | SignInWithPasswordResponse
   | SignInCancelledResponse;
+
+const signIn = (
+  domain: string,
+  challenge: string,
+  options?: signInOptions
+): Promise<PasskeySignInResponse> => {
+  return passkey.signIn(domain, challenge, options || {});
+}
+
+const signUp = (
+  domain: string,
+  challenge: string,
+  displayName: string,
+  userId: string,
+  options?: signUpOptions
+): Promise<PasskeySignUpResponse> => {
+  return passkey.signUp(domain, challenge, displayName, userId, options || {});
+};
+
+export default passkey as PasskeyInterface;
+
+export { signIn, signUp, AssertionType };
