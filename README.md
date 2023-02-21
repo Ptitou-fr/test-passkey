@@ -53,14 +53,15 @@ To do so:
     `'example.com'` with your own domain ([apple doc](https://developer.apple.com/documentation/xcode/supporting-associated-domains)).
 
 - In your app, add the `Associated Domains` capability ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)):
-  - Open your app with Xcode,<br>
-  - Select your app target ([steps 1, 2 , and 3](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)),<br>
-  - Go to the Signing & Capabilities tab ([step 4](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)),<br>
-  - Click '+ Capability' ([step 5](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)), then add the 'Associated Domains' capability,<br>
+  - Open your app with Xcode,
+  - Select your app target ([steps 1, 2 , and 3](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)),
+  - Go to the Signing & Capabilities tab ([step 4](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)),
+  - Click '+ Capability' ([step 5](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotSigningCapability.png)), then add the 'Associated Domains' capability,
   - Inside 'Associated Domains' capability box, click the (+) button to add a placeholder domain.<br>
-  Replace it with webcredentials:<yourdomain.com> ([see our example](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotAssociatedDomains.png))<br>
+    This should add a service `'webcredentials:example.com'` ([example](https://github.com/Ptitou-fr/test-passkey/blob/main/gitAssets/screenshotAssociatedDomains.png)).<br>
+    Replace 'example.com' with your onw domain.
     > While you're developing your app, for debugging purposes or if your server is unreachable from the public internet, you can use the alternate mode feature ([apple doc](https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_developer_associated-domains)).<br>
-    > For example: webcredentials:example.com?mode=developer,<br>
+    > For example: webcredentials:example.com?mode=developer
 
 ## Usage
 
@@ -174,23 +175,23 @@ const options = {
 };
 
 try {
-  const crential = await signIn(
+  const credential = await signIn(
     domain,
     chalenge,
     options
   );
-  if ( crential.assertionType === AssertionType.PASSKEY ) {
+  if ( credential.assertionType === AssertionType.PASSKEY ) {
     const { userId, signature, authenticator } = assertion;
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
-  } else if ( crential.assertionType === AssertionType.PASSWORD ) {
-    // verify the credeintials (userName and password) with your server.
+  } else if ( credential.assertionType === AssertionType.PASSWORD ) {
+    // verify the credentials (userName and password) with your server.
     // ...
     // then, if the credentials are valid, you can sign in the user.
     // This is a good time to offer the user to create a passkey.
   } else {
-    // crential.assertionType === AssertionType.CANCELLED
+    // credential.assertionType === AssertionType.CANCELLED
     // either no credentials are available locally and the request abords silently,
     // or the user cancelled the request.
 
@@ -214,17 +215,17 @@ const domain = 'exemple.com';
 const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
 
 try {
-  const crential = await signIn(
+  const credential = await signIn(
     domain,
     chalenge
   );
-  if ( crential.assertionType === AssertionType.PASSKEY ) {
+  if ( credential.assertionType === AssertionType.PASSKEY ) {
     const { userId, signature, authenticator } = assertion;
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
   } else {
-    // crential.assertionType === AssertionType.CANCELLED
+    // credential.assertionType === AssertionType.CANCELLED
     // => the user cancelled the request.
 
     // => you probably want go back to tour login screen.
