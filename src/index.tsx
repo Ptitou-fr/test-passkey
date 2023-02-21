@@ -6,8 +6,30 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
+// The iOS version need to be 15.0+
+// The Android API level need to be 34+
+const isPasskeyNotSupported =
+  (Platform.OS === 'ios' && parseInt(Platform.Version as string, 10) < 15) ||
+  (Platform.OS === 'android' &&
+    parseInt(Platform.Version as unknown as string, 10) < 34);
+const VERSION_NOT_SUPPORTED =
+  `Passkeys are only supported in ` +
+  Platform.select({ ios: 'iOS version 15.0 or higher\n' }) +
+  Platform.select({ android: 'Android API level 34 or higher\n' });
+
+const passkeyNotSupported = {
+  signUp: () => {
+    throw new Error(VERSION_NOT_SUPPORTED);
+  },
+  signIn: () => {
+    throw new Error(VERSION_NOT_SUPPORTED);
+  },
+};
+
 const passkey = NativeModules.Passkey
-  ? NativeModules.Passkey
+  ? isPasskeyNotSupported
+    ? passkeyNotSupported
+    : NativeModules.Passkey
   : new Proxy(
       {},
       {
@@ -84,8 +106,7 @@ const signIn = (
   options?: signInOptions
 ): Promise<PasskeySignInResponse> => {
   return passkey.signIn(domain, challenge, options || {});
-}
-
+};
 const signUp = (
   domain: string,
   challenge: string,
@@ -97,5 +118,4 @@ const signUp = (
 };
 
 export default passkey as PasskeyInterface;
-
 export { signIn, signUp, AssertionType };
