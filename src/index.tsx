@@ -85,20 +85,14 @@ interface SignInWithPasswordResponse {
   password: string;
 }
 
-interface SignInCancelledResponse {
-  assertionType: AssertionType.CANCELED;
-}
-
 enum AssertionType {
   PASSKEY = 'passkey',
   PASSWORD = 'password',
-  CANCELED = 'canceled',
 }
 
 type PasskeySignInResponse =
   | SignInWithPasskeyResponse
-  | SignInWithPasswordResponse
-  | SignInCancelledResponse;
+  | SignInWithPasswordResponse;
 
 const signIn = (
   domain: string,

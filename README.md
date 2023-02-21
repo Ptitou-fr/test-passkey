@@ -127,10 +127,6 @@ The signIn returns a Promise that resolves to an object with the following prope
   - `password`: string<br>
     The password for this assertion.
 
-- If the request was canceled:<br>
-  - `assertion`: string<br>
-    In this case, assertion = 'canceled'.
-
 ### signUp:
 #### signUp parameters:
 - `domain`: string<br>
@@ -189,20 +185,20 @@ try {
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
-  } else if ( credential.assertionType === AssertionType.PASSWORD ) {
+  } else {
+    // credential.assertionType === AssertionType.PASSWORD
     // verify the credentials (userName and password) with your server.
     // ...
     // then, if the credentials are valid, you can sign in the user.
     // This is a good time to offer the user to create a passkey.
-  } else {
-    // credential.assertionType === AssertionType.CANCELLED
-    // either no credentials are available locally and the request abords silently,
-    // or the user cancelled the request.
-
-    // => you probably now want to show a login or signUp screen to the user.
   }
 } catch (error) {
-  // Handle error
+  // it can be:
+  // - an error => Handle the error.
+  // or
+  // - either no credentials are available locally and the request abords silently,
+  // or the user cancelled the request => Time to show your login or signUp screen to the user.
+
   // Note: the error.message cointains useful information about the error.
 }
 ```
@@ -228,14 +224,9 @@ try {
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
-  } else {
-    // credential.assertionType === AssertionType.CANCELLED
-    // => the user cancelled the request.
-
-    // => you probably want go back to tour login screen.
   }
 } catch (error) {
-  // Handle error
+  // Handle error or user cancellation.
   // Note: the error.message cointains useful information about the error.
 }
 ```
@@ -270,7 +261,7 @@ try {
   // after your server has verified the attestation, it can create a new user account.
   // then you can sign in the user.
 } catch (error) {
-  // Handle error
+  // Handle error or user cancellation.
   // Note: the error.message cointains useful information about the error.
 }
 ```
