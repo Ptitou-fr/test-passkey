@@ -11,9 +11,9 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
     @objc
     func signUp(
         _ domain: String,
+        withChallengeB64 challengeB64: String,
         withDisplayName displayName: String,
         withUserId userId: String,
-        withChallengeB64 challengeB64: String,
         withOptions options: NSDictionary?,
         withResolver resolve: @escaping RCTPromiseResolveBlock,
         withRejecter reject: @escaping RCTPromiseRejectBlock
@@ -107,8 +107,10 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             didCompleteWithAuthorization(
                 [
                     "credentialID": credentialRegistration.credentialID.base64EncodedString(),
-                    "attestation": credentialRegistration.rawAttestationObject?.base64EncodedString() ?? "",
-                    "clientData": credentialRegistration.rawClientDataJSON.base64EncodedString()
+                    "response": [
+                        "attestationObject": credentialRegistration.rawAttestationObject?.base64EncodedString() ?? "",
+                        "clientData": credentialRegistration.rawClientDataJSON.base64EncodedString()
+                    ]
                 ]
             )
             logger.log("A new passkey was registered: \(credentialRegistration)")
