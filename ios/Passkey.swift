@@ -106,7 +106,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             // registration result
             didCompleteWithAuthorization(
                 [
-                    "credentialID": credentialRegistration.credentialID,
+                    "credentialID": credentialRegistration.credentialID.base64EncodedString(),
                     "response": [
                         "attestationObject": credentialRegistration.rawAttestationObject?.base64EncodedString() ?? "",
                         "clientData": credentialRegistration.rawClientDataJSON.base64EncodedString()
