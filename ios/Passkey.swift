@@ -7,7 +7,7 @@ import os
 class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate {
     var didCompleteWithAuthorization: (NSDictionary) -> Void = { authorization in }
     var didCompleteWithError: (Error) -> Void = { error in }
-    
+
     @objc
     func signUp(
         _ domain: String,
@@ -28,7 +28,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         }
         let options = options ?? [:] // default value
         let securityKey = options["securityKey"] as? Bool ?? false // default value
-        
+
         let publicKeyCredentialProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: domain)
         let registrationRequest = publicKeyCredentialProvider.createCredentialRegistrationRequest(challenge: challengeData,
                                                                                                   name: displayName, userID: userIdData)
@@ -36,7 +36,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         authController.delegate = self
         authController.presentationContextProvider = self
         authController.performRequests()
-        
+
         didCompleteWithAuthorization = {authorization in
             resolve(authorization);
         }
@@ -44,7 +44,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             reject(String((error as NSError).code), String((error as NSError).localizedDescription), nil);
         }
     }
-    
+
     @objc
     func signIn(
         _ domain: String,
@@ -61,23 +61,23 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         }
         //         let bytes = [UInt32](repeating: 0, count: 32).map { _ in arc4random() }
         //         let challengeData = Data(bytes: bytes, count: 32)
-        
+
         let options = options ?? [:] // default value
         let allowSavedPassword = options["allowSavedPassword"] as? Bool ?? false // default value
         let preferLocallyAvailableCredentials = options["preferLocallyAvailableCredentials"] as? Bool ?? false // default value
         let securityKey = options["securityKey"] as? Bool ?? false // default value
 
-        
+
         let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: domain)
-        
+
         // assertion
         let assertionRequest = platformProvider.createCredentialAssertionRequest(challenge: challengeData)
-        
+
         // password
         let passwordCredentialProvider = ASAuthorizationPasswordProvider()
         let passwordRequest = passwordCredentialProvider.createRequest()
-        
-        
+
+
         let authController = ASAuthorizationController(authorizationRequests: [assertionRequest, allowSavedPassword ? passwordRequest : nil].compactMap {$0})
         authController.delegate = self
         authController.presentationContextProvider = self
@@ -86,7 +86,7 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
         } else {
             authController.performRequests()
         }
-        
+
         didCompleteWithAuthorization = {authorization in
             resolve(authorization);
         }
@@ -97,8 +97,8 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return ASPresentationAnchor()
     }
-    
-    
+
+
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         let logger = Logger()
         switch authorization.credential {
@@ -106,10 +106,10 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             // registration result
             didCompleteWithAuthorization(
                 [
-                    "credentialID": credentialRegistration.credentialID.base64EncodedString(),
+                    "id": credentialRegistration.credentialID.base64EncodedString(),
                     "response": [
                         "attestationObject": credentialRegistration.rawAttestationObject?.base64EncodedString() ?? "",
-                        "clientData": credentialRegistration.rawClientDataJSON.base64EncodedString()
+                        "clientDataJSON": credentialRegistration.rawClientDataJSON.base64EncodedString()
                     ]
                 ]
             )
@@ -118,19 +118,21 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             // The attestationObject contains the user's new public key to store and use for subsequent sign-ins.
             // let attestationObject = credentialRegistration.rawAttestationObject
             // let clientDataJSON = credentialRegistration.rawClientDataJSON
-            
+
             // After the server verifies the registration and creates the user account, sign in the user with the new account.
-            
+
         case let credentialAssertion as ASAuthorizationPlatformPublicKeyCredentialAssertion:
             // assertion result
             didCompleteWithAuthorization(
                 [
                     "signedInWith": "passkey",
-                    "credentialID": credentialAssertion.credentialID.base64EncodedString(),
-                    "authenticator": credentialAssertion.rawAuthenticatorData.base64EncodedString(),
-                    "clientData": credentialAssertion.rawClientDataJSON.base64EncodedString(),
-                    "signature": credentialAssertion.signature.base64EncodedString(),
-                    "userId": credentialAssertion.userID.base64EncodedString()
+                    "id": credentialAssertion.credentialID.base64EncodedString(),
+                    "response": [
+                      "authenticatorData": credentialAssertion.rawAuthenticatorData.base64EncodedString(),
+                      "clientDataJSON": credentialAssertion.rawClientDataJSON.base64EncodedString(),
+                      "signature": credentialAssertion.signature.base64EncodedString(),
+                      "userId": credentialAssertion.userID.base64EncodedString()
+                    ]
                 ]
             )
             logger.log("A passkey was used to sign in: \(credentialAssertion)")
@@ -138,31 +140,33 @@ class Passkey: NSObject, ASAuthorizationControllerPresentationContextProviding, 
             // let signature = credentialAssertion.signature
             // let clientDataJSON = credentialAssertion.rawClientDataJSON
             // let userID = credentialAssertion.userID
-            
+
             // After the server verifies the assertion, sign in the user.
-            
+
         case let passwordCredential as ASPasswordCredential:
             // password result
             didCompleteWithAuthorization(
                 [
                     "signedInWith": "password",
-                    "user": passwordCredential.user,
-                    "password": passwordCredential.password
+                    "response": [
+                      "user": passwordCredential.user,
+                      "password": passwordCredential.password
+                    ]
                 ]
             )
             logger.log("A password was provided: \(passwordCredential)")
             // Verify the userName and password with your service.
             // let userName = passwordCredential.user
             // let password = passwordCredential.password
-            
+
             // After the server verifies the userName and password, sign in the user.
-            
+
         default:
             didCompleteWithError("Resolve with an unknown authorization type" as! Error)
             logger.log("Unknown authorization type")
         }
     }
-    
+
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         didCompleteWithError(error);
     }
