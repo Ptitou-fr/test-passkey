@@ -109,18 +109,25 @@ Options is an optional object with the following properties:<br>
 #### signIn return value:
 The signIn returns a Promise that resolves to an object with the following properties:<br>
 - If a passkey was used to signIn:<br>
-  - `assertion`: string<br>
+  - `signedInWith`: string<br>
     In this case, assertion = 'passkey'.
-  - `userId`: string<br>
-    The user identifier for this assertion.
-  - `signature`: string<br>
-    The signature for this assertion.
-  - `authenticator`: string<br>
-    A byte sequence that contains additional information about the credential.<br>
-    To learn more, see the [W3C WebAuthn specification](https://www.w3.org/TR/webauthn-2/#authenticator-data).
+  - `id`: string<br>
+    The assertion credentialID.
+  - `response`: Object<br>
+    The assertion response object with the following properties:
+    - `authenticatorData`: string<br>
+      A byte sequence that contains additional information about the credential.<br>
+      To learn more, see the [W3C WebAuthn specification](https://www.w3.org/TR/webauthn-2/#authenticator-data).
+    - `clientDataJSON`: string<br>
+      A byte sequence that contains information about the client and the authentication ceremony.<br>
+      To learn more, see the [W3C WebAuthn specification](https://www.w3.org/TR/webauthn-2/#client-data).
+    - `signature`: string<br>
+      The signature for this assertion.
+    - `userId`: string<br>
+      The user identifier for this assertion.
 
 - If a saved password was used to signIn:<br>
-  - `assertion`: string<br>
+  - `signedInWith`: string<br>
     In this case, assertion = 'password'.
   - `user`: string<br>
     The user identifier for this assertion.
@@ -136,9 +143,9 @@ The signIn returns a Promise that resolves to an object with the following prope
   Important: The challenge needs to be unique for each request.
   The challenge has to be a Base64 string.
 - `userName`: string<br>
-  The user-visible name that identifies a passkey.
+  The user-visible name that identifies a passkey on the user device.
 - `userID`: string<br>
-  The identifier that your server associates with the user.
+  The identifier that your server associates with this user or this passkey.
 - `options?`: Object<br>
   Options is an object with the following properties:<br>
   - `securityKey?`: boolean (default value: False)<br>
@@ -146,13 +153,15 @@ The signIn returns a Promise that resolves to an object with the following prope
 
 #### signUp return value:
 The signUp returns a Promise that resolves to an object with the following properties:<br>
-- `attestation`: string<br>
+- `id`: string<br>
+  The assertion credentialID.
+- `response`: Object<br>
+  The assertion response object with the following properties:
+  - `attestationObject`: string<br>
   The attestation contains the user's public key that you have to store on your server.
   You will need it to verify the signature of the assertions.
-- `userName`: string<br>
-  The user-visible name to identifies a passkey.
-- `userID`: string<br>
-  The identifier that your server associates with the user.
+  - `clientDataJSON`: string<br>
+  A byte sequence that contains information about the client and the authentication ceremony.<br>
 
 ## examples:
 #### Signing in with a passkey or saved password on app launch
@@ -175,18 +184,17 @@ const options = {
 };
 
 try {
-  const credential = await signIn(
+  const assertion = await signIn(
     domain,
     chalenge,
     options
   );
-  if ( credential.assertionType === AssertionType.PASSKEY ) {
-    const { userId, signature, authenticator } = assertion;
+  if ( assertion.signedInWith === AssertionType.PASSKEY ) {
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
   } else {
-    // credential.assertionType === AssertionType.PASSWORD
+    // assertion.signedInWith === AssertionType.PASSWORD
     // verify the credentials (userName and password) with your server.
     // ...
     // then, if the credentials are valid, you can sign in the user.
@@ -215,12 +223,11 @@ const domain = 'exemple.com';
 const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
 
 try {
-  const credential = await signIn(
+  const assertion = await signIn(
     domain,
     chalenge
   );
-  if ( credential.assertionType === AssertionType.PASSKEY ) {
-    const { userId, signature, authenticator } = assertion;
+  if ( assertion.signedInWith === AssertionType.PASSKEY ) {
     // Verify the signature and clientDataJson with your server forthe given userId.
     // ...
     // then, if the signature is valid, you can sign in the user.
@@ -247,13 +254,12 @@ const userName = 'John Doe';
 const userID = '123456789';
 
 try {
-  const crential = await signUp(
+  const attestation = await signUp(
     domain,
     chalenge,
     userName,
     userID
   );
-  const { attestation, userName, userID } = crential;
   // Attestation containts the user's public key that you have to store on your server.
   // You will need it to verify the signature of the assertions.
   // userName and userID are the same as the ones you passed to the signUp function.
