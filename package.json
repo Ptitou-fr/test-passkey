@@ -1,5 +1,5 @@
 {
-  "name": "react-passkey",
+  "name": "rn-passkey",
   "version": "0.1.0",
   "description": "Passkey for React",
   "main": "lib/commonjs/index",
