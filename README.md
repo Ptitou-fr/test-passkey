@@ -173,11 +173,11 @@ We recommend to use this 'silent' signIn option on your app launch if the user i
 ```ts
 import { signIn, AssertionType } from 'rn-passkey';
 
-const domain = 'exemple.com';
+const domain = 'example.com';
 // Obtain a challenge from your server.
 // Important: The challenge needs to be unique for each request.
 // The challenge need to be a Base64 string.
-const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
+const challenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
 const options = {
   preferLocallyAvailableCredentials: true,
   allowSavedPassword: true,
@@ -186,7 +186,7 @@ const options = {
 try {
   const assertion = await signIn(
     domain,
-    chalenge,
+    challenge,
     options
   );
   if ( assertion.signedInWith === AssertionType.PASSKEY ) {
@@ -216,16 +216,16 @@ For user experience reasons, we recommend using it in response to a user's actio
 ```ts
 import { signIn, AssertionType } from 'rn-passkey';
 
-const domain = 'exemple.com';
+const domain = 'example.com';
 // Obtain a challenge from your server.
 // Important: The challenge needs to be unique for each request.
 // The challenge has to be a Base64 string.
-const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
+const challenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
 
 try {
   const assertion = await signIn(
     domain,
-    chalenge
+    challenge
   );
   if ( assertion.signedInWith === AssertionType.PASSKEY ) {
     // Verify the signature and clientDataJson with your server forthe given userId.
@@ -242,11 +242,11 @@ try {
 ```ts
 import { signUp } from 'rn-passkey';
 
-const domain = 'exemple.com';
+const domain = 'example.com';
 // Obtain a challenge from your server.
 // Important: The challenge needs to be unique for each request.
 // The challenge has to be a Base64 string.
-const chalenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
+const challenge = 'IjMzRUhhdi1qWjF2OXF3SDc4M2FVLWowQVJ4NnI1by1ZSGgtd2Q3QzZqUGJkN1doNnl0Yklab3NJSUFDZWh3ZjktczZoWGh5U0hPLUhIVWpFd1pTMjl3Ig==';
 // The user-visible name to identifies a passkey.
 // the only data you have to ask the user for.
 const userName = 'John Doe';
@@ -256,7 +256,7 @@ const userID = '123456789';
 try {
   const attestation = await signUp(
     domain,
-    chalenge,
+    challenge,
     userName,
     userID
   );
